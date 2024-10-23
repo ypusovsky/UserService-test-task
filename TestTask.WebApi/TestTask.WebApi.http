@@ -1,0 +1,6 @@
+@TestTask.WebApi_HostAddress = http://localhost:5136
+
+GET {{TestTask.WebApi_HostAddress}}/user/
+Accept: application/json
+
+###
