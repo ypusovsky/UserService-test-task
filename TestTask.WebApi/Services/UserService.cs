@@ -22,7 +22,7 @@ public class UserService(
             Email = user.Email,
             PasswordHash = passwordHash,
             Name = user.Name,
-            Role = user.Role
+            Role = nameof(user.Role)
         });
         await webSocketService.NotifyClients($"User with {user.Email} email successfully created.");
 
