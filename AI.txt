@@ -1,0 +1,2 @@
+3 requirement:
+	I have UserService with 3 methods, I need to create simple websocket controller which notify with some user info in realtime

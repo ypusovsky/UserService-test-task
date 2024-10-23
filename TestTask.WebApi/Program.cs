@@ -21,6 +21,7 @@ builder.Services.AddSingleton<IUserDbContext>(sp =>
 });
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserValidator, UserValidator>();
+builder.Services.AddScoped<IWebSocketService, WebSocketService>();
 builder.Services.AddScoped<IUserService, UserService>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -29,10 +30,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+var webSocketOptions = new WebSocketOptions
+{
+    KeepAliveInterval = TimeSpan.FromMinutes(2)
+};
+app.UseWebSockets(webSocketOptions);
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

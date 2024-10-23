@@ -4,7 +4,8 @@ using TestTask.WebApi.Models;
 
 public class UserService(
     IUserRepository userRepository,
-    IUserValidator userValidator) : IUserService
+    IUserValidator userValidator,
+    IWebSocketService webSocketService) : IUserService
 {
     public async Task<OperationResult<Guid>> Create(UserDto user)
     {
@@ -15,7 +16,7 @@ public class UserService(
         }
 
         var passwordHash = BCrypt.Net.BCrypt.HashPassword(user.Password);
-        return await userRepository.Create(new UserEntity
+        OperationResult<Guid> result = await userRepository.Create(new UserEntity
         {
             Id = Guid.NewGuid(),
             Email = user.Email,
@@ -23,11 +24,17 @@ public class UserService(
             Name = user.Name,
             Role = user.Role
         });
+        await webSocketService.NotifyClients($"User with {user.Email} email successfully created.");
+
+        return result;
     }
 
-    public Task<IEnumerable<string>> GetAllNames()
+    public async Task<IEnumerable<string>> GetAllNames()
     {
-        return userRepository.GetAllNames();
+        IEnumerable<string> result = await userRepository.GetAllNames();
+        await webSocketService.NotifyClients($"{result.Count()} user names were successfully received.");
+
+        return result;
     }
 
     public async Task<OperationResult<Guid>> UpdateRole(Guid userId, UserRole newRole)
@@ -38,6 +45,9 @@ public class UserService(
             return OperationResult<Guid>.Failure(roleValidation.Message);
         }
 
-        return await userRepository.UpdateRole(userId, newRole);
+        OperationResult<Guid> result = await userRepository.UpdateRole(userId, newRole);
+        await webSocketService.NotifyClients($"The role of user with {userId} was successfully changed to {nameof(newRole)}");
+
+        return result;
     }
 }
