@@ -19,5 +19,13 @@ namespace TestTask.WebApi.Infrastructure
         {
             return await db.UpdateRole(userId, newRole);
         }
+        public async Task<bool> EmailExists(string email)
+        {
+            return await db.EmailExists(email);
+        }
+        public async Task<bool> IdExists(Guid id)
+        {
+            return await db.IdExists(id);
+        }
     }
 }

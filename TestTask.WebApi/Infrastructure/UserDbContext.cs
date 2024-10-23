@@ -50,5 +50,31 @@ namespace TestTask.WebApi.Infrastructure
 
             return OperationResult<Guid>.Success(userId);
         }
+
+        public async Task<bool> EmailExists(string email)
+        {
+            using (var db = new SqlConnection(connectionString))
+            {
+                await db.OpenAsync();
+
+                var command = new SqlCommand($"SELECT COUNT(1) FROM Users WHERE Email = {email}", db);
+                var result = await command.ExecuteScalarAsync();
+
+                return Convert.ToInt32(result) > 0;
+            }
+        }
+
+        public async Task<bool> IdExists(Guid id)
+        {
+            using (var db = new SqlConnection(connectionString))
+            {
+                await db.OpenAsync();
+
+                var command = new SqlCommand($"SELECT COUNT(1) FROM Users WHERE Id = {id}", db);
+                var result = await command.ExecuteScalarAsync();
+
+                return Convert.ToInt32(result) > 0;
+            }
+        }
     }
 }

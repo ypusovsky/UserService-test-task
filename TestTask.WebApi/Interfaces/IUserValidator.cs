@@ -4,7 +4,7 @@ namespace TestTask.WebApi.Interfaces
 {
     public interface IUserValidator
     {
-        OperationResult<bool> ValidateUserDto(UserDto user);
-        OperationResult<bool> ValidateRole(UserRole newRole);
+        Task<OperationResult<bool>> ValidateUserDto(UserDto user);
+        Task<OperationResult<bool>> ValidateRoleUpdate(Guid userId, UserRole newRole);
     }
 }
